@@ -108,6 +108,7 @@ while curDate < endDate
    % advance time
    curDate = curDate + 1;
 end
+wealthTS = wealthTS(1:idxTS-1,:);
 
 figure;
 hold on;
@@ -123,7 +124,7 @@ toEQ = find(wealthTS(1:idxTS-1,3) < [wealthTS(2:idxTS-1,3); 1]);
 for idxEQ = toEQ.'
     idxFI = toFI(find(toFI > idxEQ, 1));
     if isempty(idxFI)
-        idxFI = idxTS-1;
+        idxFI = idxTS-1; % no subsequent FI period, just highlight to end
     end
     area(wealthTS(idxEQ:idxFI,1),wealthTS(idxEQ:idxFI,2),'FaceColor',[.3 .4 .5],'LineStyle','none');
     alpha(.2);
@@ -131,17 +132,59 @@ end
 datetick;
 %xlabel('Time');
 ylabel(['Growth of $' initialMoney ' investment']);
-title('Calendar Rotation Historical Performance');
+title('Calendar Rotation Historical Performance (dividends reinvested)');
 %legend('Calendar Rotation','SPDR S&P MidCap 400 (MDY)','iShares Barclays 1-3 Year Treasury Bond (SHY)');
 hold off;
 
+% Calculate overall return
+ret = ((wealthTS(end,2) - wealthTS(1,2))/wealthTS(1,2));
+fprintf('Overall Return (final_val-initial_val)/initial_val: %f\n', ret);
+duration = (wealthTS(end,1)-wealthTS(1,1));
+fprintf('  Duration: %d days\n',duration);
+ret = ret * 365/duration;   %(1+ret)^(365/duration)-1;
+fprintf('  Annualized = Overall * 365/duration: %f\n', ret);
+
+% Calculate return during period invested in EQ
+ret = zeros(5,size(toEQ,1));
+for i = 1:size(toEQ,1)
+    idxEQ = toEQ(i);
+    idxFI = toFI(find(toFI > idxEQ, 1));
+    if isempty(idxFI)
+        idxFI = idxTS-1; % no subsequent FI period, just highlight to end
+    end
+    ret(:,i) = [
+        wealthTS(idxEQ,2);
+        wealthTS(idxFI,2);
+        wealthTS(idxFI,2) - wealthTS(idxEQ,2);
+        wealthTS(idxFI,1)-wealthTS(idxEQ,1);
+        (wealthTS(idxFI,2)-wealthTS(idxEQ,2))/wealthTS(idxEQ,2) * 365/(wealthTS(idxFI,1)-wealthTS(idxEQ,1));
+    ];
+end
+format short g
+fprintf('EQ period: start; end; gain; duration (days); return (annualized)'); 
+display(ret);
 
 
-
-
-
-
-
+% Calculate return during period invested in FI
+toFI = [1; toFI];
+ret = zeros(5,size(toFI,1));
+for i = 1:size(toFI,1)
+    idxFI = toFI(i);
+    idxEQ = toEQ(find(toEQ > idxFI, 1));
+    if isempty(idxEQ)
+        idxFI = idxTS-1; % no subsequent FI period, just highlight to end
+    end
+    ret(:,i) = [
+        wealthTS(idxFI,2);
+        wealthTS(idxEQ,2);
+        wealthTS(idxEQ,2) - wealthTS(idxFI,2);
+        wealthTS(idxEQ,1)-wealthTS(idxFI,1);
+        (wealthTS(idxEQ,2)-wealthTS(idxFI,2))/wealthTS(idxFI,2) * 365/(wealthTS(idxEQ,1)-wealthTS(idxFI,1));
+    ];
+end
+format short g
+fprintf('FI period: start; end; gain; duration (days); return (annualized)'); 
+display(ret);
 
 
 
