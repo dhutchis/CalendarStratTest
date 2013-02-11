@@ -111,20 +111,42 @@ end
 
 figure;
 hold on;
-plot(wealthTS(1:idxTS-1,1),wealthTS(1:idxTS-1,2))
-idxEQ = find(wealthTS(1:idxTS-1,3) == 1);
-idxFI = find(wealthTS(1:idxTS-1,3) == 0);
-    %area(wealthTS(idxEQ,1), wealthTS(idxEQ,2),'FaceColor',[.2 .2 .2]);
+plot(wealthTS(1:idxTS-1,1),wealthTS(1:idxTS-1,2)); % plot the data
+% idxEQ = find(wealthTS(1:idxTS-1,3) == 1);
+% idxFI = find(wealthTS(1:idxTS-1,3) == 0);
+    %area(wealthTS(idxEQ,1), wealthTS(idxEQ,2),'FaceColor',[.2 .2 .2],'LineStyle','none');
     %area(wealthTS(idxFI,1), wealthTS(idxFI,2),'FaceColor',[.3 .4 .5]);
 %plot(wealthTS(idxEQ,1), wealthTS(idxEQ,2));
 %plot(wealthTS(idxFI,1), wealthTS(idxFI,2),'Color','green');
-
+toFI = find(wealthTS(1:idxTS-1,3) > [wealthTS(2:idxTS-1,3); 1]); % highlight EQ holding periods
+toEQ = find(wealthTS(1:idxTS-1,3) < [wealthTS(2:idxTS-1,3); 1]);
+for idxEQ = toEQ.'
+    idxFI = toFI(find(toFI > idxEQ, 1));
+    if isempty(idxFI)
+        idxFI = idxTS-1;
+    end
+    area(wealthTS(idxEQ:idxFI,1),wealthTS(idxEQ:idxFI,2),'FaceColor',[.3 .4 .5],'LineStyle','none');
+    alpha(.2);
+end
 datetick;
 %xlabel('Time');
 ylabel(['Growth of $' initialMoney ' investment']);
 title('Calendar Rotation Historical Performance');
 %legend('Calendar Rotation','SPDR S&P MidCap 400 (MDY)','iShares Barclays 1-3 Year Treasury Bond (SHY)');
 hold off;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if 0
