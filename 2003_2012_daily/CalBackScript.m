@@ -96,7 +96,7 @@ while curDate < endDate
        flagEQ = 0;
    elseif bDivToday
        tmpdiv = myval * curHoldingDiv{2}(bDivToday); % in cash
-       tmpidx = find(curDate >= curHolding{1}, 1); % index of first trading day on or after today in my current holding
+       tmpidx = find(curDate <= curHolding{1}, 1); % index of first trading day on or after today in my current holding
        myval = myval + tmpdiv / curHolding{2}(tmpidx); % purchase additional shares
    end
    
