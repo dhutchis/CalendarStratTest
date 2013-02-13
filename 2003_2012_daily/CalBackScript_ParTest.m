@@ -37,12 +37,12 @@ dSHYdiv{2} = flipud(dSHYdiv{2}); % reverse array
 % dSHYdiv{1} is dividend award date, dSHYdiv{2} is dividend yield amt
 %---------------------------------------------
 % PARAMETERS
-startDate = datenum([2003 5 1 0 0 0]); % equal to startFI
-firstEQ = datenum([2003 10 15 0 0 0]);
+%startDate = datenum([2003 5 1 0 0 0]); % equal to startFI
+%firstEQ = datenum([2003 10 15 0 0 0]);
 nextEQ = firstEQ;
 endDate = datenum([2012 12 31 0 0 0]);
 initialMoney = 10000;
-SINGLE_ANALYSIS = 1;
+SINGLE_ANALYSIS = 0;
 
 curDate = startDate;
 wealthTS = zeros(ceil(endDate-startDate),3);

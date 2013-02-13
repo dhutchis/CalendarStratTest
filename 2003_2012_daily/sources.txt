@@ -14,3 +14,4 @@ Sell FI and buy EQ Oct 8
 If dividend occus in between those dates, buy more stock at the record date at current price.  If record date does not exist or falls on a weekend or we don't have that day's price for any weekend, use the price of the first day with market data on or after the effective date +3 days.
 
 %datestr(dt) %returns original
+dSHY{2}( find(dSHY{1} == datenum([2003 5 1 0 0 0]),1) )
