@@ -7,24 +7,24 @@ dSHY{1} = flipud(dSHY{1}); % reverse array
 dSHY{2} = flipud(dSHY{2}); % reverse array
 % dSHY(1) is datenum, dSHY(2) is Adjusted close
 
-file = fopen('MDY.csv');
+file = fopen('SPY.csv');
 fgetl(file); %skip header line
-dMDY=textscan(file,'%s %f','delimiter',',');
+dSPY=textscan(file,'%s %f','delimiter',',');
 fclose(file);
-dMDY{1} = datenum(dMDY{1}, 'mm/dd/yyyy');
-dMDY{1} = flipud(dMDY{1}); % reverse array
-dMDY{2} = flipud(dMDY{2}); % reverse array
-% dMDY(1) is datenum, dMDY(2) is Adjusted close
+dSPY{1} = datenum(dSPY{1}, 'mm/dd/yyyy');
+dSPY{1} = flipud(dSPY{1}); % reverse array
+dSPY{2} = flipud(dSPY{2}); % reverse array
+% dSPY(1) is datenum, dSPY(2) is Adjusted close
 
-file = fopen('MDY_dividend.csv');
+file = fopen('SPY_dividend.csv');
 fgetl(file);
-dMDYdiv = textscan(file,'%s %f %s','delimiter',',');
+dSPYdiv = textscan(file,'%s %f %s','delimiter',',');
 fclose(file);
-dMDYdiv{1} = datenum(dMDYdiv{3}, 'mm/dd/yyyy');
-dMDYdiv(3) = []; % don't care about offer date, just award date
-dMDYdiv{1} = flipud(dMDYdiv{1}); % reverse array
-dMDYdiv{2} = flipud(dMDYdiv{2}); % reverse array
-% dMDYdiv{1} is dividend award date, dMDYdiv{2} is dividend yield amt
+dSPYdiv{1} = datenum(dSPYdiv{3}, 'mm/dd/yyyy');
+dSPYdiv(3) = []; % don't care about offer date, just award date
+dSPYdiv{1} = flipud(dSPYdiv{1}); % reverse array
+dSPYdiv{2} = flipud(dSPYdiv{2}); % reverse array
+% dSPYdiv{1} is dividend award date, dSPYdiv{2} is dividend yield amt
 
 file = fopen('SHY_dividend.csv');
 fgetl(file);
@@ -63,31 +63,31 @@ while curDate < endDate
     bDivToday = find(curDate == curHoldingDiv{1}, 1); % is there a dividend today? bDivToday is the index
     
    if curDate == nextEQ
-       % sell all held SHY shares, buy all MDY shares
+       % sell all held SHY shares, buy all SPY shares
        tmpidx = find(dSHY{1} >= curDate, 1); % first trading day on or after today
        % what if there is a dividend between? Very unlikely
        curDate = dSHY{1}(tmpidx); %advance time 
        myval = myval * dSHY{2}(tmpidx); %myval now contains $
        % lag period - just holding cash
-       tmpidx = find(dMDY{1} >= curDate, 1); % first trading day on or after today (effectively same day)
-       curDate1 = dMDY{1}(tmpidx); %advance time 
-       assert(curDate == curDate1,'MDY and SHY sold on different trading days?');
-       myval = myval / dMDY{2}(tmpidx); %myval now contains shares of MDY
+       tmpidx = find(dSPY{1} >= curDate, 1); % first trading day on or after today (effectively same day)
+       curDate1 = dSPY{1}(tmpidx); %advance time 
+       assert(curDate == curDate1,'SPY and SHY sold on different trading days?');
+       myval = myval / dSPY{2}(tmpidx); %myval now contains shares of SPY
        
-       curHolding = dMDY;
-       curHoldingDiv = dMDYdiv;
+       curHolding = dSPY;
+       curHoldingDiv = dSPYdiv;
        nextEQ = datenum(datevec(nextEQ) + [1 0 0 0 0 0]);
        flagEQ = 1;
    elseif curDate == nextFI
-       % sell all held MDY shares, buy all SHY shares
-       tmpidx = find(dMDY{1} >= curDate, 1); % first trading day on or after today
+       % sell all held SPY shares, buy all SHY shares
+       tmpidx = find(dSPY{1} >= curDate, 1); % first trading day on or after today
        % what if there is a dividend between? Very unlikely
-       curDate = dMDY{1}(tmpidx); %advance time 
-       myval = myval * dMDY{2}(tmpidx); %myval now contains $
+       curDate = dSPY{1}(tmpidx); %advance time 
+       myval = myval * dSPY{2}(tmpidx); %myval now contains $
        % lag period - just holding cash
        tmpidx = find(dSHY{1} >= curDate, 1); % first trading day on or after today (effectively same day)
        curDate1 = dSHY{1}(tmpidx); %advance time 
-       assert(curDate == curDate1,'SHY and MDY sold on different trading days?');
+       assert(curDate == curDate1,'SHY and SPY sold on different trading days?');
        myval = myval / dSHY{2}(tmpidx); %myval now contains shares of SHY
        
        curHolding = dSHY;
@@ -136,7 +136,7 @@ if SINGLE_ANALYSIS
     %xlabel('Time');
     ylabel(['Growth of $' initialMoney ' investment']);
     title('Calendar Rotation Historical Performance (dividends reinvested)');
-    %legend('Calendar Rotation','SPDR S&P MidCap 400 (MDY)','iShares Barclays 1-3 Year Treasury Bond (SHY)');
+    %legend('Calendar Rotation','SPDR S&P MidCap 400 (SPY)','iShares Barclays 1-3 Year Treasury Bond (SHY)');
     hold off;
 end
 
@@ -201,10 +201,10 @@ end
 
 if 0
 figure;
-plot(dMDY{1},dMDY{2});
+plot(dSPY{1},dSPY{2});
 datetick;
-ylabel('MDY price');
-title('SPDR S&P MidCap 400 (MDY)');
+ylabel('SPY price');
+title('SPDR S&P MidCap 400 (SPY)');
 
 figure;
 plot(dSHY{1},dSHY{2});

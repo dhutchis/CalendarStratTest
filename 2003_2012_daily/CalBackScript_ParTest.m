@@ -203,12 +203,12 @@ if 0
 figure;
 plot(dMDY{1},dMDY{2});
 datetick;
-ylabel(['MDY price']);
+ylabel('MDY price');
 title('SPDR S&P MidCap 400 (MDY)');
 
 figure;
 plot(dSHY{1},dSHY{2});
 datetick;
-ylabel(['SHY price']);
+ylabel('SHY price');
 title('iShares Barclays 1-3 Year Treasury Bond (SHY)');
 end

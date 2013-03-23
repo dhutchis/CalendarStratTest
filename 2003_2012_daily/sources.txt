@@ -2,6 +2,7 @@ Dividend info: http://www.nasdaq.com/symbol/mdy/dividend-history#.URgcDKVEGRo
 Historical price info: 
 MDY	http://finance.yahoo.com/q/hp?s=MDY&a=00&b=1&c=2003&d=11&e=31&f=2012&g=d
 SHY	http://finance.yahoo.com/q/hp?s=SHY&a=00&b=1&c=2003&d=11&e=31&f=2012&g=d
+SPY http://finance.yahoo.com/q/hp?s=SPY&a=00&b=1&c=2003&d=11&e=31&f=2012&g=d
 
 Data FIltering/Processing
 =IF(ISBLANK(C2),A2+3,C2)
@@ -15,3 +16,8 @@ If dividend occus in between those dates, buy more stock at the record date at c
 
 %datestr(dt) %returns original
 dSHY{2}( find(dSHY{1} == datenum([2003 5 1 0 0 0]),1) )
+
+For SPY, all EQ 9% vs. CalStrat 15%
+Max Return of 0.152280 
+	at EQ->FI date 05/01
+	at FI->EQ date 10/22
